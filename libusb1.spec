@@ -1,7 +1,7 @@
 Summary: A library which allows userspace access to USB devices
 Name: libusb1
 Version: 1.0.9
-Release: 0.6.rc1%{?dist}
+Release: 0.7.rc1%{?dist}
 Source0: libusb-1.0.9-rc1.tar.bz2
 #Source0: http://downloads.sourceforge.net/libusb/libusb-%{version}.tar.bz2
 
@@ -16,6 +16,8 @@ Patch7: 0007-linux_usbfs-Avoid-unnecessary-splitting-of-bulk-tran.patch
 # For rhbz#820205
 Patch8: 0008-detach-kernel-driver-return-ERROR_NOT_FOUND-if-usbfs.patch
 Patch9: 0009-linux_usbfs-Work-around-a-driver-binding-race-in-res.patch
+# For rhbz#596815
+Patch10: 0010-linux-Assume-usbfs-path-dev-bus-usb-when-using-UDEV.patch
 
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -57,6 +59,7 @@ This package contains static libraries to develop applications that use libusb1.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %build
 %configure
@@ -98,6 +101,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.a
 
 %changelog
+* Thu Dec 17 2015 Hans de Goede <hdegoede@redhat.com> - 1.0.9-0.7.rc1
+- Fix libusb_init failure on systems with 0 usb busses
+- Resolves: rhbz#596815
+
 * Wed Aug 22 2012 Hans de Goede <hdegoede@redhat.com> - 1.0.9-0.6.rc1
 - Don't split bulk transfers unnecessary
 - Resolves: rhbz#830751
