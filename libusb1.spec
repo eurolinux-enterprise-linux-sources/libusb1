@@ -1,7 +1,7 @@
 Summary: A library which allows userspace access to USB devices
 Name: libusb1
 Version: 1.0.9
-Release: 0.5.rc1%{?dist}
+Release: 0.6.rc1%{?dist}
 Source0: libusb-1.0.9-rc1.tar.bz2
 #Source0: http://downloads.sourceforge.net/libusb/libusb-%{version}.tar.bz2
 
@@ -10,6 +10,12 @@ Patch2: 0002-linux-Fix-cancel_transfer-return-value-when-cancelli.patch
 Patch3: 0003-Don-t-print-errors-when-cancel_transfer-fails-with-N.patch
 Patch4: 0004-linux-Fix-handling-of-urb-status-codes.patch
 Patch5: 0005-linux-Translate-linux-iso-pkt-status-codes-to-libusb.patch
+# For rhbz#830751
+Patch6: 0006-linux_usbfs-Add-support-for-the-new-get_capabilities.patch
+Patch7: 0007-linux_usbfs-Avoid-unnecessary-splitting-of-bulk-tran.patch
+# For rhbz#820205
+Patch8: 0008-detach-kernel-driver-return-ERROR_NOT_FOUND-if-usbfs.patch
+Patch9: 0009-linux_usbfs-Work-around-a-driver-binding-race-in-res.patch
 
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -47,6 +53,10 @@ This package contains static libraries to develop applications that use libusb1.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 %configure
@@ -88,6 +98,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.a
 
 %changelog
+* Wed Aug 22 2012 Hans de Goede <hdegoede@redhat.com> - 1.0.9-0.6.rc1
+- Don't split bulk transfers unnecessary
+- Resolves: rhbz#830751
+- Don't let disconnect_kernel_driver detach the usbfs driver
+- Resolves: rhbz#820205
+
 * Wed Mar 14 2012 Hans de Goede <hdegoede@redhat.com> - 1.0.9-0.5.rc1
 - Add some small error handling fixes
 - Related: rhbz#758094
