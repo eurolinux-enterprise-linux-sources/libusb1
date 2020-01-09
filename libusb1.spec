@@ -1,8 +1,16 @@
 Summary: A library which allows userspace access to USB devices
 Name: libusb1
-Version: 1.0.3
-Release: 1%{?dist}
-Source0: http://downloads.sourceforge.net/libusb/libusb-%{version}.tar.bz2
+Version: 1.0.9
+Release: 0.5.rc1%{?dist}
+Source0: libusb-1.0.9-rc1.tar.bz2
+#Source0: http://downloads.sourceforge.net/libusb/libusb-%{version}.tar.bz2
+
+Patch1: 0001-Correctly-handle-LIBUSB_TRANSFER_OVERFLOW-in-libusb_.patch
+Patch2: 0002-linux-Fix-cancel_transfer-return-value-when-cancelli.patch
+Patch3: 0003-Don-t-print-errors-when-cancel_transfer-fails-with-N.patch
+Patch4: 0004-linux-Fix-handling-of-urb-status-codes.patch
+Patch5: 0005-linux-Translate-linux-iso-pkt-status-codes-to-libusb.patch
+
 License: LGPLv2+
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -33,7 +41,12 @@ Requires: %{name}-devel = %{version}-%{release}
 This package contains static libraries to develop applications that use libusb1.
 
 %prep
-%setup -q -n libusb-%{version}
+%setup -q -n libusb-1.0.8
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 %configure
@@ -46,6 +59,10 @@ popd
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+
+# Our snapshot reports itself as 1.0.8, change the pkg-config file version to
+# 1.0.9 so that configure checks by apps who need the new 1.0.9 succeed
+sed -i 's/1\.0\.8/1.0.9/' %{buildroot}/%{_libdir}/pkgconfig/libusb-1.0.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -71,6 +88,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.a
 
 %changelog
+* Wed Mar 14 2012 Hans de Goede <hdegoede@redhat.com> - 1.0.9-0.5.rc1
+- Add some small error handling fixes
+- Related: rhbz#758094
+
+* Tue Jan 17 2012 Hans de Goede <hdegoede@redhat.com> - 1.0.9-0.4.rc1
+- Fix previous changelog entry to refer to the right bug
+- Related: rhbz#758094
+
+* Wed Jan 11 2012 Marc-Andre Lureau <marcandre.lureau@redhat.com> 1.0.9-0.3.rc1
+- update to 1.0.9rc1, sync with f16
+- Resolves: rhbz#758094
+
 * Mon Sep 28 2009 Jindrich Novy <jnovy@redhat.com> 1.0.3-1
 - update to 1.0.3
 

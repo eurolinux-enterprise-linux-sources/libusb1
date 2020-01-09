@@ -20,9 +20,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#include <libusb/libusb.h>
+#include <libusb.h>
 
-void print_devs(libusb_device **devs)
+static void print_devs(libusb_device **devs)
 {
 	libusb_device *dev;
 	int i = 0;
